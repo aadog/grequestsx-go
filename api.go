@@ -1,8 +1,9 @@
 package grequestsx
 
 import (
+	"errors"
+	"github.com/json-iterator/go"
 	. "github.com/levigross/grequests"
-	"github.com/valyala/fastjson"
 )
 
 func UseSessionOrCreate(session *Session, options *RequestOptions) *Session {
@@ -12,10 +13,11 @@ func UseSessionOrCreate(session *Session, options *RequestOptions) *Session {
 	return NewSession(options)
 }
 
-func ResponseToJson(res *Response) (*fastjson.Value, error) {
-	v, err := fastjson.Parse(res.String())
-	if err != nil {
-		return nil, err
+func ResponseToJson(res *Response) (jsoniter.Any, error) {
+	isjson := jsoniter.Valid(res.Bytes())
+	if isjson != false {
+		return nil, errors.New("parse json error")
 	}
+	v := jsoniter.Get(res.Bytes())
 	return v, nil
 }
