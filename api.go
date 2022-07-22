@@ -15,7 +15,7 @@ func UseSessionOrCreate(session *Session, options *RequestOptions) *Session {
 
 func ResponseToJson(res *Response) (jsoniter.Any, error) {
 	isjson := jsoniter.Valid(res.Bytes())
-	if isjson != false {
+	if isjson == false {
 		return nil, errors.New("parse json error")
 	}
 	v := jsoniter.Get(res.Bytes())
